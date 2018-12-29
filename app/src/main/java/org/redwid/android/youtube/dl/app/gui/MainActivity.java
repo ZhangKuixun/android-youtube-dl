@@ -55,13 +55,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final String jsonAsString = intent.getStringExtra(YoutubeDlService.VALUE_JSON);
             Timber.i("onReceive(): is jsonAsString empty: %s", TextUtils.isEmpty(jsonAsString));
             hideLoading();
-            if(YoutubeDlService.JSON_RESULT_SUCCESS.equals(intent.getAction())) {
+            if (YoutubeDlService.JSON_RESULT_SUCCESS.equals(intent.getAction())) {
                 final Gson gson = new Gson();
                 final JsonObject jsonObject = gson.fromJson(jsonAsString, JsonObject.class);
                 initData(jsonObject);
-            }
-            else
-            if(YoutubeDlService.JSON_RESULT_ERROR.equals(intent.getAction())) {
+            } else if (YoutubeDlService.JSON_RESULT_ERROR.equals(intent.getAction())) {
                 final Gson gson = new Gson();
                 final JsonObject jsonObject = gson.fromJson(jsonAsString, JsonObject.class);
                 initData(null);
@@ -75,9 +73,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Timber.i("onCreate(%s)", savedInstanceState);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        String url = "https://www.dailymotion.com/video/x6xwk6y?playlist=x64re9_xid";
         initData(null);
         registerBroadcastReceiver();
-        processSendIntent(getIntent());
+        Intent intent = getIntent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType(TEXT_PLAIN);
+        intent.putExtra(Intent.EXTRA_TEXT, url);
+        processSendIntent(intent);
     }
 
     @Override
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final View content = findViewById(R.id.content);
         final View empty = findViewById(R.id.empty);
 
-        if(jsonObject == null) {
+        if (jsonObject == null) {
             content.setVisibility(View.GONE);
             empty.setVisibility(View.VISIBLE);
             return;
@@ -154,9 +157,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         content.setVisibility(View.VISIBLE);
         empty.setVisibility(View.GONE);
 
-        final String thumbnail = JsonHelper.getAsString(jsonObject,"thumbnail");
+        final String thumbnail = JsonHelper.getAsString(jsonObject, "thumbnail");
         final ImageView thumbnailView = findViewById(R.id.thumbnail);
-        if(thumbnailView != null && !TextUtils.isEmpty(thumbnail)) {
+        if (thumbnailView != null && !TextUtils.isEmpty(thumbnail)) {
             final RequestOptions options = new RequestOptions().
                     centerCrop().
                     diskCacheStrategy(DiskCacheStrategy.ALL);
@@ -167,42 +170,42 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     into(thumbnailView);
         }
 
-        final long duration = JsonHelper.getAsLong(jsonObject,"duration");
+        final long duration = JsonHelper.getAsLong(jsonObject, "duration");
         final TextView durationView = findViewById(R.id.duration);
-        if(durationView != null) {
+        if (durationView != null) {
             durationView.setText(formatVideoFileDuration(duration));
         }
 
-        stringTitle = JsonHelper.getAsString(jsonObject,"title");
+        stringTitle = JsonHelper.getAsString(jsonObject, "title");
         final TextView titleView = findViewById(R.id.title);
-        if(titleView != null) {
+        if (titleView != null) {
             titleView.setText(stringTitle);
             titleView.setOnClickListener(this);
         }
 
-        final String uploader = JsonHelper.getAsString(jsonObject,"uploader", "unknown");
-        final String view_count = JsonHelper.getAsString(jsonObject,"view_count", "0");
-        final String upload_date = JsonHelper.getAsString(jsonObject,"upload_date", "none");
-        stringSubTitle = String.format("%s - %s views - %s", uploader, view_count,upload_date);
+        final String uploader = JsonHelper.getAsString(jsonObject, "uploader", "unknown");
+        final String view_count = JsonHelper.getAsString(jsonObject, "view_count", "0");
+        final String upload_date = JsonHelper.getAsString(jsonObject, "upload_date", "none");
+        stringSubTitle = String.format("%s - %s views - %s", uploader, view_count, upload_date);
 
         final TextView sub_titleView = findViewById(R.id.sub_title);
-        if(sub_titleView != null) {
+        if (sub_titleView != null) {
             sub_titleView.setText(stringSubTitle);
             sub_titleView.setOnClickListener(this);
         }
 
-        stringDescription = JsonHelper.getAsString(jsonObject,"description");
+        stringDescription = JsonHelper.getAsString(jsonObject, "description");
         final TextView descriptionView = findViewById(R.id.description);
-        if(descriptionView != null) {
+        if (descriptionView != null) {
             descriptionView.setText(stringDescription);
             descriptionView.setOnClickListener(this);
         }
 
         final List<Format> formatList = parseFormats(jsonObject);
-        if(!formatList.isEmpty()) {
+        if (!formatList.isEmpty()) {
             final RecyclerView recycler_view = findViewById(R.id.recycler_view);
             recycler_view.setLayoutManager(new LinearLayoutManager(this));
-            if(recycler_view != null) {
+            if (recycler_view != null) {
                 Collections.sort(formatList);
                 recycler_view.setAdapter(new FormatAdapter(formatList, this));
             }
@@ -217,10 +220,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String hours = String.format(format, timeInMillisec / 3600);
         String time = "";
 
-        if(hours.equals("00")) {
+        if (hours.equals("00")) {
             time = minutes + ":" + seconds;
-        }
-        else {
+        } else {
             time = hours + ":" + minutes + ":" + seconds;
         }
         return time;
@@ -228,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public List<Format> parseFormats(final JsonObject jsonObject) {
         final JsonArray array = jsonObject.getAsJsonArray("formats");
-        if(array != null) {
+        if (array != null) {
             JsonObject item;
             final List<Format> formatList = new ArrayList<>();
             for (JsonElement jsonElement : array) {
@@ -250,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     protected void changeLoadingVisibility(int visibility) {
         final View loading = findViewById(R.id.loading);
-        if(loading != null) {
+        if (loading != null) {
             loading.setVisibility(visibility);
         }
     }
@@ -278,7 +280,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             popUpDialog.show(fragmentManager, "pop_up_dialog");
-        } catch(IllegalStateException e) {
+        } catch (IllegalStateException e) {
             Timber.e(e, "ERROR showing popUpDialog.show()");
         }
     }

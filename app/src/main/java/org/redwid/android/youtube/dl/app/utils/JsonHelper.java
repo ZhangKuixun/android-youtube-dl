@@ -15,7 +15,7 @@ public final class JsonHelper {
         if(item != null && item.has(key)) {
             try {
                 return item.get(key).getAsString();
-            } catch(UnsupportedOperationException ignore) {
+            } catch(Exception ignore) {
 
             }
         }
@@ -26,7 +26,7 @@ public final class JsonHelper {
         if(item != null && item.has(key)) {
             try {
             return item.get(key).getAsLong();
-            } catch(UnsupportedOperationException ignore) {
+            } catch(Exception ignore) {
 
             }
         }
@@ -37,7 +37,7 @@ public final class JsonHelper {
         if(item != null && item.has(key)) {
             try {
             return item.get(key).getAsInt();
-            } catch(UnsupportedOperationException ignore) {
+            } catch(Exception ignore) {
 
             }
         }

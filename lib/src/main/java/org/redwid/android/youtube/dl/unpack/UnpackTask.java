@@ -22,7 +22,7 @@ public class UnpackTask {
     }
 
     private File getAppRootFile(final Context context) {
-        final String app_root = context.getFilesDir().getAbsolutePath() + "/" + YOUTUBE_DL;
+        final String app_root = context.getFilesDir().getAbsolutePath() + "/" + YOUTUBE_DL;// /data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl
         return new File(app_root);
     }
 
@@ -46,7 +46,7 @@ public class UnpackTask {
 
         // Check the current disk version, if any.
         String filesDir = target.getAbsolutePath();
-        String disk_version_fn = filesDir + "/" + resource + ".version";
+        String disk_version_fn = filesDir + "/" + resource + ".version";// /data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl/private.version
 
         try {
             byte buf[] = new byte[64];
@@ -59,7 +59,7 @@ public class UnpackTask {
         }
 
         // If the disk data is out of date, extract it and write the
-        // version file.
+        // version file. 如果磁盘数据过时，提取它并写入版本文件
         // if (! data_version.equals(disk_version)) {
         if (! data_version.equals(disk_version)) {
             Timber.i( "Extracting %s assets", resource);

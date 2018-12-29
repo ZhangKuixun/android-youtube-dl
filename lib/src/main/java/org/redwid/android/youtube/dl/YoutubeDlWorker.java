@@ -25,8 +25,8 @@ public class YoutubeDlWorker {
 
         try {
             final long time = System.currentTimeMillis();
-            final String cacheDir = context.getCacheDir().getAbsolutePath();
-            final String applicationRootDir = context.getFilesDir().getAbsolutePath();
+            final String cacheDir = context.getCacheDir().getAbsolutePath();// /data/user/0/org.redwid.android.youtube.dl.app/cache
+            final String applicationRootDir = context.getFilesDir().getAbsolutePath();// /data/user/0/org.redwid.android.youtube.dl.app/files
             final String pythonApplicationRootDir = applicationRootDir + "/youtube_dl";
             Timber.i("process(%s), stringUrl: %s", this.hashCode(), stringUrl);
 
@@ -34,8 +34,8 @@ public class YoutubeDlWorker {
                     "-j", stringUrl,
                     "--cache-dir", cacheDir};
 
-            final File dlDoneFile = new File(pythonApplicationRootDir, "youtube_dl.done");
-            final File dlJsonFile = new File(pythonApplicationRootDir, "youtube_dl.json");
+            final File dlDoneFile = new File(pythonApplicationRootDir, "youtube_dl.done");// /data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl/youtube_dl.done
+            final File dlJsonFile = new File(pythonApplicationRootDir, "youtube_dl.json");// /data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl/youtube_dl.json
             if (dlDoneFile.exists()) {
                 dlDoneFile.delete();
             }
@@ -51,7 +51,7 @@ public class YoutubeDlWorker {
                         "main.pyo",
                         "python2.7",
                         pythonApplicationRootDir,
-                        pythonApplicationRootDir + ":" + pythonApplicationRootDir + "/lib",
+                        pythonApplicationRootDir + ":" + pythonApplicationRootDir + "/lib",// /data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl:/data/user/0/org.redwid.android.youtube.dl.app/files/youtube_dl/lib
                         applicationArguments);
             } catch (Throwable t) {
                 Timber.e(t, "Exception in nativeStart()");
